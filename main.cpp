@@ -40,13 +40,7 @@ class UnitDouble {
 		//Find dimension in table
 	}
 	
-	/*
-	//Operator overload for <<
-	ostream& operator<<(ostream& os, const UnitDouble& self){
-		os<<self.value<<" "<<self.unit<<"("<<self.dimension<<")";
-		return os;
-	}
-	*/
+	
 	//Operator overload for +
 	UnitDouble operator + (const UnitDouble y) const{
 		UnitDouble z(0.0,"");
@@ -66,7 +60,12 @@ class UnitDouble {
 	
 };
 
-
+//Operator overload for << & UnitDouble
+ostream& operator << (ostream& os, const UnitDouble& ud){
+	os << ud.value << " " << ud.unit << "(" << ud.dimension << ")";
+	return os;
+}
+	
 
 
 
@@ -76,7 +75,7 @@ int main() {
 	UnitDouble y(5.0, "meter");
 	
 	cout<<"Test Addition:";
-	//cout<<x + y<<endl;
+	cout<<x+y<<endl;
 	
 	return 0;
 }
