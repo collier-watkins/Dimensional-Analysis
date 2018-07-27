@@ -31,6 +31,8 @@ class UnitDouble {
 	public:
 		double value;
 		string unit;
+		//string numerator;		//Replace unit variable
+		//string denominator;	//Make string into vector of strings? 
 		string dimension;
 		
 	UnitDouble(double v, string u){
