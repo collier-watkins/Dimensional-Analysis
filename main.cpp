@@ -86,20 +86,24 @@ class UnitDouble {
 	}
 	
 	UnitDouble operator * (const UnitDouble x) const{
-		UnitDouble z;
-		
+		UnitDouble temp(value, numerator, denominator, dimension);
 		//1. Convert all units to base units
 		
 		//2. Multiply values
-		z.value = value * x.value;
+		temp.value = value * x.value;
 		
-		//3. Cancel / combine units
-		for(int i = 0; i < numerator.size(); i++){
-			for(int j = 0; j < x.denominator.size(); j++){
-				if(numerator[i] == x.denominator[j]){
-					numerator.erase(numerator.begin() + i);
-					x.denominator.erase(x.denominator.begin() + j);
-					
+		//3. Combine unit numerators and denominators
+		
+		temp.numerator.insert(temp.numerator.end(), x.numerator.begin(), x.numerator.end());
+		temp.denominator.insert(temp.denominator.end(), x.denominator.begin(), x.denominator.end());
+		
+		
+		//4a. Cancel units numerator to denominator
+		for(int i = 0; i < temp.numerator.size(); i++){
+			for(int j = 0; j < temp.denominator.size(); j++){
+				if(temp.numerator[i] == temp.denominator[j]){
+					temp.numerator.erase(temp.numerator.begin() + i);
+					temp.denominator.erase(temp.denominator.begin() + j);
 					
 					i = 0; //reset main loop because of deletion
  					break; //break loop because of deletion
@@ -107,15 +111,38 @@ class UnitDouble {
 			}
 		}
 		
-		z.numerator = numerator;
+		//4b. Cancel units denominator to numerator
+		for(int i = 0; i < temp.denominator.size(); i++){
+			for(int j = 0; j < temp.numerator.size(); j++){
+				if(temp.denominator[i] == temp.numerator[j]){
+					temp.denominator.erase(temp.denominator.begin() + i);
+					temp.numerator.erase(temp.numerator.begin() + j);
+					
+					i = 0; //reset main loop because of deletion
+ 					break; //break loop because of deletion
+				}
+			}
+		}
 		
-		//4. Determine new dimension
-		z.dimension = dimension;
 		
-		//5. return z
-		return z;
+		
+		//5. Determine new dimension
+		
+		
+		//6. return temp
+		return temp;
 		
 	}
+	
+	UnitDouble operator / (const UnitDouble x) const{
+		UnitDouble self(value, numerator, denominator, dimension);
+		UnitDouble inv_x(1/x.value, x.denominator, x.numerator, x.dimension);
+		
+		return self * inv_x;
+		
+	}
+	
+	
 	
 	
 	
@@ -189,14 +216,24 @@ int main() {
 	vector<string> time;
 	time.push_back("s");
 	
+	vector<string> time_sq;
+	time_sq.push_back("s");
+	time_sq.push_back("s");
+	
+	
 	vector<string> empty;
 	
-	UnitDouble a(3.0, len, time, "speed");
+	UnitDouble a(3.0, len, time_sq, "acceleration");
 	UnitDouble b(5.0, time, empty, "time");
 	
+	cout<<"a: " << a <<endl;
+	cout<<"b: " << b <<endl;
 	
 	cout<<"Test Multiplication: ";
 	cout<<a*b<<endl;
+
+	cout<<"Test Division: ";
+	cout<<a/b<<endl;
 
 	
 	
